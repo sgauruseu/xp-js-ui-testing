@@ -15,8 +15,8 @@ allprojects {
     apply plugin: 'java-base'
     apply plugin: 'maven'
 
-    group = 'com.enonic.xp.ui-testing'
-    version = '2.0.0-SNAPSHOT'
+    group = 'com.enonic.xp.users.js-testing'
+    version = '1.0.0-SNAPSHOT'
 
     repositories {
         mavenLocal()

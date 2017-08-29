@@ -25,6 +25,15 @@ Page.prototype.isDisabled = function (selector) {
 Page.prototype.waitForVisible = function (selector, ms) {
     return this.browser.waitForVisible(selector, ms);
 };
+Page.prototype.waitForSpinnerNotVisible = function ( ms) {
+    return this.browser.waitUntil(function () {
+        return !browser.isVisible(`//div[@class='spinner']`)
+    })
+};
+
+Page.prototype.isSpinnerVisible = function () {
+    return this.browser.isVisible(`//div[@class='spinner']`);
+};
 
 Page.prototype.doClick = function (selector) {
     return this.browser.click(selector);
@@ -53,7 +62,7 @@ Page.prototype.getTextFromInput = function (selector) {
     return this.browser.getAttribute(selector, 'value');
 };
 Page.prototype.waitForNotificationMessage = function () {
-    return this.browser.waitForVisible(`//div[@class='notification-content']/span`).then(()=> {
+    return this.browser.waitForVisible(`//div[@class='notification-content']/span`,2000).then(()=> {
         return this.browser.getText(`//div[@class='notification-content']/span`);
     })
 };

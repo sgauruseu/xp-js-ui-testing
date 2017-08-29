@@ -4,6 +4,7 @@
 var page = require('../page');
 var panel = {
     toolbar: `//div[contains(@id,'UserBrowseToolbar')]`,
+    grid: `//div[@class='grid-canvas']`,
     rowByName: function (name) {
         return `//div[contains(@id,'NamesView') and child::p[contains(@class,'sub-name') and contains(.,'${name}')]]`
     },
@@ -36,6 +37,13 @@ var userBrowsePanel = Object.create(page, {
             });
         }
     },
+    waitForUsersGridLoaded: {
+        value: function (ms) {
+            return this.waitForVisible(`${panel.grid}`, ms).then(()=>{
+                return this.waitForSpinnerNotVisible();
+            });
+        }
+    },
     newButton: {
         get: function () {
             return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='New']]`
@@ -52,7 +60,8 @@ var userBrowsePanel = Object.create(page, {
             return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='Delete']]`;
         }
     },
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     clickOnNewButton: {
         value: function () {
             return this.doClick(this.newButton);
@@ -74,6 +83,12 @@ var userBrowsePanel = Object.create(page, {
             return this.waitForEnabled(this.newButton, 3000);
         }
     },
+
+    waitForSpinnerNotVisible: {
+        value: function () {
+            return this.waitForEnabled(this.newButton, 3000);
+        }
+    },
     isDeleteButtonEnabled: {
         value: function () {
             return this.isEnabled(this.deleteButton);
@@ -87,7 +102,11 @@ var userBrowsePanel = Object.create(page, {
     clickOnRowByName: {
         value: function (name) {
             var displayNameXpath = panel.rowByName(name);
-            return this.doClick(displayNameXpath);
+            return this.waitForVisible(displayNameXpath, 2000).then(()=> {
+                return this.doClick(displayNameXpath);
+            }).catch(()=> {
+                throw Error('row with the name' + name + 'was not found')
+            })
         }
     },
     clickOnExpanderIcon: {

@@ -10,7 +10,7 @@ module.exports = {
     xpTabs: {},
     navigateToUsersApp: function (browser) {
         launcherPanel.init(browser);
-        return launcherPanel.waitForPanelVisible(500).then(()=> {
+        return launcherPanel.waitForPanelVisible(1000).then(()=> {
             console.log("'user browse panel' should be loaded");
             return launcherPanel.clickOnUsersLink();
         }).then(()=> {
@@ -25,6 +25,8 @@ module.exports = {
         return browser.getTabIds().then(tabs => {
             this.xpTabs = tabs;
             return browser.switchTab(this.xpTabs[1]);
+        }).then(()=> {
+            return userBrowsePanel.waitForUsersGridLoaded(3000);
         });
     },
 
@@ -32,7 +34,7 @@ module.exports = {
         loginPage.init(browser);
         return loginPage.doLogin().then(()=> {
             homePage.init(browser);
-            return homePage.waitForXpTourVisible(2000);
+            return homePage.waitForXpTourVisible(3000);
         }).then(()=> {
             return homePage.doCloseXpTourDialog();
         }).then(()=> {
@@ -41,32 +43,36 @@ module.exports = {
         }).then(()=> {
             return this.doSwitchToUsersApp(browser);
         });
-    },
+    }
+    ,
 
     doCloseUsersApp: function (browser) {
         return browser.close().pause(300).then(()=> {
             return browser.switchTab(this.xpTabs[0]);
         })
-    },
+    }
+    ,
     doAddUserStore: function (browser, userStoreData) {
         userBrowsePanel.init(browser);
         userStoreWizard.init(browser);
         return userBrowsePanel.clickOnNewButton().then(()=>userStoreWizard.typeData(userStoreData)).then(
             ()=> {
-                console.log("button Save has been pressed");
+                console.log("UserStoreWizard: button Save has been pressed");
                 return userStoreWizard.doSave();
-            }).then(()=> {
+            }).pause(500).then(()=> {
             console.log("do close the User Store tab");
             userStoreWizard.doClickOnCloseTabButton(userStoreData.displayName);
         }).catch(()=> {
             browser.saveScreenshot('err_creating_store')
             throw new Error(`User Store was not created!`);
         })
-    },
+    }
+    ,
 
     doOpenUserStoreWizard: function (browser, userStoreData) {
         userBrowsePanel.init(browser);
         userStoreWizard.init(browser);
         return userBrowsePanel.clickOnNewButton().then(()=>userStoreWizard.waitForOpened());
-    },
+    }
+    ,
 };

@@ -50,7 +50,7 @@ describe('User Store saving and deleting spec', function () {
     it(`GIVEN User Store wizard is opened WHEN data has been typed and 'Save' button pressed AND the wizard has been closed THEN new User Store should be listed`,
         () => {
             userStore = userItemsBuilder.buildUserStore(userItemsBuilder.generateRandomName('store'), 'test user store');
-            return testUtils.doAddUserStore(client, userStore).pause(1000)
+            return testUtils.doAddUserStore(client, userStore).pause(2000)
                 .then(()=>userBrowsePanel.isExist(userStore.displayName)).then(result=> {
                     assert.isTrue(result, 'new user store should be present in the grid');
                 })

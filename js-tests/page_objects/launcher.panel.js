@@ -12,17 +12,17 @@ var launcherPanel = Object.create(page, {
      */
     homeLink: {
         get: function () {
-            return `${panel.container} input[id^='password-input']`;
+            return `${panel.container} a[data-id*='home']`
         }
     },
     applications: {
         value: function (userName) {
-            return this.typeTextInInput(this.usernameInput, userName);
+            return `${panel.container} a[data-id*='app.applications']`
         }
     },
     contentStudioLink: {
         get: function () {
-            return `button[id^='login-button']`
+            return `${panel.container} a[data-id*='app.contentstudio']`
         }
     },
     usersLink: {
@@ -34,11 +34,6 @@ var launcherPanel = Object.create(page, {
     clickOnUsersLink: {
         value: function () {
             return this.doClick(this.usersLink);
-        }
-    },
-    isVisible: {
-        value: function (ms) {
-            return this.waitForExist(this.usernameInput, ms);
         }
     },
     waitForPanelVisible: {

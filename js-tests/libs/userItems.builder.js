@@ -12,4 +12,19 @@ module.exports = {
             providerName: providerName,
         };
     },
+    buildUser: function (displayName, password, email) {
+        return {
+            displayName: displayName,
+            password: password,
+            email: email,
+        };
+    },
+
+    buildRole: function (displayName, description, memebers) {
+        return {
+            displayName: displayName,
+            description: description,
+            members: members,
+        };
+    },
 };
