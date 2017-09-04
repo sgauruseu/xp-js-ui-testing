@@ -13,6 +13,9 @@ var panel = {
                `/ancestor::div[contains(@class,'slick-cell')]/span[contains(@class,'collapse') or contains(@class,'expand')]`;
 
     },
+    closeItemTabButton: function (name) {
+        return `//div[contains(@id,'AppBar')]//li[contains(@id,'AppBarTabMenuItem') and child::a[@class='label' and text() ='${name}']]/button`;
+    },
 }
 var userBrowsePanel = Object.create(page, {
 
@@ -39,7 +42,7 @@ var userBrowsePanel = Object.create(page, {
     },
     waitForUsersGridLoaded: {
         value: function (ms) {
-            return this.waitForVisible(`${panel.grid}`, ms).then(()=>{
+            return this.waitForVisible(`${panel.grid}`, ms).then(()=> {
                 return this.waitForSpinnerNotVisible();
             });
         }
@@ -61,7 +64,7 @@ var userBrowsePanel = Object.create(page, {
         }
     },
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     clickOnNewButton: {
         value: function () {
             return this.doClick(this.newButton);
@@ -105,8 +108,13 @@ var userBrowsePanel = Object.create(page, {
             return this.waitForVisible(displayNameXpath, 2000).then(()=> {
                 return this.doClick(displayNameXpath);
             }).catch(()=> {
-                throw Error('row with the name' + name + 'was not found')
+                throw Error('Row with the name ' + name + ' was not found')
             })
+        }
+    },
+    doClickOnCloseTabButton: {
+        value: function (displayName) {
+            return this.doClick(`${panel.closeItemTabButton(displayName)}`);
         }
     },
     clickOnExpanderIcon: {
