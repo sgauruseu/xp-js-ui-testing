@@ -34,42 +34,13 @@ ext {
 
 
 dependencies {
-    compile 'org.seleniumhq.selenium:selenium-java:3.0.1'
-    compile 'com.google.guava:guava:18.0'
     compile "com.enonic.xp:core-api:$xpVersion"
-    compile 'log4j:log4j:1.2.17'
-    compile 'org.codehaus.groovy:groovy-all:2.4.6'
-    compile 'org.spockframework:spock-core:1.0-groovy-2.4'
-    compile 'org.gebish:geb-spock:0.13.1'
     distro "com.enonic.xp:distro:$xpVersion@zip"
 }
-
-task copyContentTypes( type: Copy ) {
-    from '../test-applications/contenttypes/build/libs/'
-    from '../test-applications/simple-page/build/libs/'
-    from '../test-applications/myfirstapp/build/libs/'
-    from '../test-applications/first-application/build/libs/'
-    include '**/*.jar'
-    into file( deployDir )
-}
-
-task copyTestApplications( type: Copy ) {
-    from '../test-applications/first-application/build/libs/'
-    from '../test-applications/second-application/build/libs/'
-    from '../test-applications/third-application/build/libs/'
-    from '../test-applications/fourth-application/build/libs/'
-    from '../test-applications/test-application/build/libs/'
-    include '**/*.jar'
-    into file( deployDir )
-}
-
 
 task deleteFolders( type: Delete ) {
     delete unpackDir, screenshotsDir, reportsDir
 }
-task buildApplications(
-    dependsOn: [':test-applications:first-application:install', ':test-applications:simple-page:install', ':test-applications:contenttypes:install',
-                ':test-applications:second-application:install', ':test-applications:third-application:install', ':test-applications:fourth-application:install', ':test-applications:test-application:install', ':test-applications:myfirstapp:install'] )
 
 task unpackDistro( type: Copy ) {
     from {
@@ -84,8 +55,6 @@ ext {
 
 task startServer( dependsOn: unpackDistro ) {
     doLast {
-        // logging.captureStandardOutput LogLevel.INFO
-        // ext.xpServer = new ServerInstance()
         xpServer.installDir = file( distroDir )
         xpServer.startupDelay = 40000
         xpServer.start()
@@ -105,12 +74,11 @@ tasks.withType( Test ) {
     }
 }
 //run the tusk in the gulpfile.js. Name of the task is 'test'
-task gulpTest( type: GulpTask, dependsOn: [npmInstall, startServer] ) {
+task gulpTest( type: GulpTask, dependsOn: [npmInstall, startServer,] ) {
     inputs.files fileTree( dir: '.' )
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
     startServer.mustRunAfter npmInstall
-
 }
 //tasks.withType(Test)*.finalizedBy allureReport
 gulpTest.finalizedBy = ['stopServer']

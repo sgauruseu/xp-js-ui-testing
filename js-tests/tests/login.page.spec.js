@@ -1,7 +1,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
-const webdriverio = require('webdriverio');
+var webDriverHelper = require('../libs/WebDriverHelper');
 chai.Should();
 var loginPage = require('../page_objects/login.page');
 require("mocha-allure-reporter");
@@ -9,17 +9,9 @@ require("mocha-allure-reporter");
 describe('login page spec', function () {
 
     this.timeout(17000);
-    var client;
+    var client =webDriverHelper.setupBrowser();
+    console.log("aaa")
 
-    before(function () {
-        client = webdriverio.remote({desiredCapabilities: {browserName: 'chrome'}});
-        loginPage.init(client);
-        return client.init().url('http://localhost:8080/admin/tool');
-    });
-
-    const testStep = allure.createStep("initial", () => {
-        console.log("sssssssssssssss");
-    });
     it('check login page', () => {
         return loginPage.getTitle().then(function (title) {
             assert.strictEqual(title, "Enonic XP - Login");
@@ -44,9 +36,5 @@ describe('login page spec', function () {
         return loginPage.waitForLoginButtonVisible(1000).then(function (result) {
             assert.isTrue(result, 'login button should be not visible');
         });
-    });
-
-    after(function () {
-        return client.end();
     });
 });

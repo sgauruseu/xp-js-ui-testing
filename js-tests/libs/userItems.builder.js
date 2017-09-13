@@ -20,7 +20,7 @@ module.exports = {
         };
     },
 
-    buildRole: function (displayName, description, memebers) {
+    buildRole: function (displayName, description, members) {
         return {
             displayName: displayName,
             description: description,

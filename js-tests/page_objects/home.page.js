@@ -25,7 +25,7 @@ var homePage = Object.create(page, {
     },
     switchToUsersTab: {
         value: function () {
-            return this.browser.getTabIds().then(tabs=> {
+            return this.getBrowser().getTabIds().then(tabs=> {
                 return this.browser.switchTab(tabs[1]);
             })
             // return this.browser.getTabIds().then(handles => {

@@ -2,42 +2,38 @@
  * Created on 6/29/2017.
  */
 const chai = require('chai');
+var should = require('chai').should
 const assert = chai.assert;
-const webdriverio = require('webdriverio');
+var webDriverHelper = require('../libs/WebDriverHelper');
+const userItemsBuilder = require('../libs/userItems.builder.js');
 const userBrowsePanel = require('../page_objects/browsepanel/userbrowse.panel');
 const userStoreWizard = require('../page_objects/wizardpanel/userstore.wizard');
 const testUtils = require('../libs/test.utils');
-const userItemsBuilder = require('../libs/userItems.builder.js');
 
 describe('User Store saving and deleting spec', function () {
     this.timeout(70000);
-    var client;
-    var userStore;
-    before(function () {
-        client = webdriverio.remote({desiredCapabilities: {browserName: 'chrome', platform: 'WINDOWS'}});
-        userBrowsePanel.init(client);
-        return client.init().url('http://localhost:8080/admin/tool');
-    });
-
-    it(`GIVEN User Store wizard is opened WHEN name has been typed AND Save button pressed THEN correct notification message should be present`,
+    webDriverHelper.setupBrowser();
+    let userStore;
+    
+    it(`GIVEN 'User Store' wizard is opened WHEN name has been typed AND 'Save' button pressed THEN correct notification message should be displayed`,
         () => {
             userStore = userItemsBuilder.buildUserStore(userItemsBuilder.generateRandomName('store'), 'test user store');
-            userStoreWizard.init(client);
-            return userBrowsePanel.clickOnNewButton().then(()=>userStoreWizard.waitForOpened())
-                .then(()=>userStoreWizard.typeDisplayName(userStore.displayName)).then(()=> {
-                    return userStoreWizard.doSave();
-                }).then(()=> {
-                    return userStoreWizard.waitForNotificationMessage();
-                }).then(result=> {
-                    assert.strictEqual(result, 'User store was created');
-                })
+            return testUtils.doOpenUserStoreWizard(webDriverHelper.browser).then(()=> {
+                return userStoreWizard.typeDisplayName(userStore.displayName);
+            }).then(()=> {
+                return userStoreWizard.waitAndClickOnSave();
+            }).then(()=> {
+                return userStoreWizard.waitForNotificationMessage();
+            }).then(result=> {
+                assert.strictEqual(result, 'User store was created');
+            })
         });
 
     it(`GIVEN 'user store' wizard is opened WHEN the name that already in use has been typed THEN correct notification message should be present`,
         ()=> {
-            return userBrowsePanel.clickOnNewButton().then(()=>userStoreWizard.waitForOpened())
+            return testUtils.doOpenUserStoreWizard(webDriverHelper.browser).then(()=>userStoreWizard.waitForOpened())
                 .then(()=>userStoreWizard.typeDisplayName(userStore.displayName)).then(()=> {
-                    return userStoreWizard.doSave();
+                    return userStoreWizard.waitAndClickOnSave();
                 }).then(()=> {
                     return userStoreWizard.waitForErrorNotificationMessage();
                 }).then(result=> {
@@ -50,7 +46,9 @@ describe('User Store saving and deleting spec', function () {
     it(`GIVEN User Store wizard is opened WHEN data has been typed and 'Save' button pressed AND the wizard has been closed THEN new User Store should be listed`,
         () => {
             userStore = userItemsBuilder.buildUserStore(userItemsBuilder.generateRandomName('store'), 'test user store');
-            return testUtils.doAddUserStore(client, userStore).pause(2000)
+            return testUtils.openWizardAndSaveUserStore(webDriverHelper.browser, userStore).then(()=> {
+                return userBrowsePanel.doClickOnCloseTabButton(userStore.displayName);
+            }).pause(1000)
                 .then(()=>userBrowsePanel.isExist(userStore.displayName)).then(result=> {
                     assert.isTrue(result, 'new user store should be present in the grid');
                 })
@@ -60,15 +58,13 @@ describe('User Store saving and deleting spec', function () {
         return userBrowsePanel.clickOnRowByName(userStore.displayName).pause(300).then(()=> {
             return userBrowsePanel.clickOnEditButton();
         }).then(()=> {
-            userStoreWizard.init(client);
             return userStoreWizard.waitForOpened();
         }).then(()=> userStoreWizard.getDescription()).then(result=> {
             assert.strictEqual(result, userStore.description);
         })
     });
 
-    beforeEach(() => testUtils.navigateToUsersApp(client));
-    afterEach(() => testUtils.doCloseUsersApp(client));
-    after(() => client.end());
+    beforeEach(() => testUtils.navigateToUsersApp(webDriverHelper.browser));
+    afterEach(() => testUtils.doCloseUsersApp(webDriverHelper.browser));
 })
 ;

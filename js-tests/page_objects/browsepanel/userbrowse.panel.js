@@ -1,13 +1,21 @@
 /**
  * Created on 5/31/2017.
  */
-var page = require('../page');
+const page = require('../page');
+const elements = require('../../libs/elements');
+
 var panel = {
     toolbar: `//div[contains(@id,'UserBrowseToolbar')]`,
     grid: `//div[@class='grid-canvas']`,
+    searchButton: "//button[contains(@class, 'icon-search')]",
     rowByName: function (name) {
         return `//div[contains(@id,'NamesView') and child::p[contains(@class,'sub-name') and contains(.,'${name}')]]`
     },
+    checkboxByName: function (name) {
+        return `${elements.itemByName(name)}` +
+               `/ancestor::div[contains(@class,'slick-row')]/div[contains(@class,'slick-cell-checkboxsel')]/label`
+    },
+
     expanderIconByName: function (name) {
         return this.rowByName(name) +
                `/ancestor::div[contains(@class,'slick-cell')]/span[contains(@class,'collapse') or contains(@class,'expand')]`;
@@ -18,6 +26,30 @@ var panel = {
     },
 }
 var userBrowsePanel = Object.create(page, {
+
+    /////////Getters
+    searchButton: {
+        get: function () {
+            return `${panel.toolbar}` + `${panel.searchButton}`;
+        }
+    },
+    newButton: {
+        get: function () {
+            return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[contains(.,'New')]]`
+        }
+    },
+    editButton: {
+        get: function () {
+            return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='Edit']]`;
+        }
+    },
+
+    deleteButton: {
+        get: function () {
+            return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='Delete']]`;
+        }
+    },
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     waitForPanelVisible: {
         value: function (ms) {
@@ -43,28 +75,17 @@ var userBrowsePanel = Object.create(page, {
     waitForUsersGridLoaded: {
         value: function (ms) {
             return this.waitForVisible(`${panel.grid}`, ms).then(()=> {
-                return this.waitForSpinnerNotVisible();
+                return this.waitForSpinnerNotVisible(3000);
+            }).then(()=>{
+                return console.log('spinner is not visible')
             });
         }
     },
-    newButton: {
-        get: function () {
-            return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='New']]`
+    clickOnSearchButton: {
+        value: function () {
+            return this.doClick(this.searchButton);
         }
     },
-    editButton: {
-        get: function () {
-            return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='Edit']]`;
-        }
-    },
-
-    deleteButton: {
-        get: function () {
-            return `${panel.toolbar}/*[contains(@id, 'ActionButton') and child::span[text()='Delete']]`;
-        }
-    },
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     clickOnNewButton: {
         value: function () {
             return this.doClick(this.newButton);
@@ -81,17 +102,17 @@ var userBrowsePanel = Object.create(page, {
         }
     },
 
+    isSearchButtonDisplayed: {
+        value: function () {
+            return this.isVisible(this.searchButton);
+        }
+    },
     waitForNewButtonEnabled: {
         value: function () {
             return this.waitForEnabled(this.newButton, 3000);
         }
     },
 
-    waitForSpinnerNotVisible: {
-        value: function () {
-            return this.waitForEnabled(this.newButton, 3000);
-        }
-    },
     isDeleteButtonEnabled: {
         value: function () {
             return this.isEnabled(this.deleteButton);
@@ -103,6 +124,16 @@ var userBrowsePanel = Object.create(page, {
         }
     },
     clickOnRowByName: {
+        value: function (name) {
+            var displayNameXpath = panel.rowByName(name);
+            return this.waitForVisible(displayNameXpath, 2000).then(()=> {
+                return this.doClick(displayNameXpath);
+            }).catch(()=> {
+                throw Error('Row with the name ' + name + ' was not found')
+            })
+        }
+    },
+    clickCheckboxAndSelectRowByDisplayName: {
         value: function (name) {
             var displayNameXpath = panel.rowByName(name);
             return this.waitForVisible(displayNameXpath, 2000).then(()=> {

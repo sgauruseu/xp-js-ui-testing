@@ -16,7 +16,7 @@ var launcherPanel = Object.create(page, {
         }
     },
     applications: {
-        value: function (userName) {
+        get: function (userName) {
             return `${panel.container} a[data-id*='app.applications']`
         }
     },

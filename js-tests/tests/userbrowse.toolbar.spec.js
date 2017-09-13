@@ -4,18 +4,13 @@
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
-const webdriverio = require('webdriverio');
+var webDriverHelper = require('../libs/WebDriverHelper');
 const userBrowsePanel = require('../page_objects/browsepanel/userbrowse.panel');
 const testUtils = require('../libs/test.utils');
 
 describe('UserBrowse-panel, toolbar spec', function () {
     this.timeout(70000);
-    var client;
-    before(function () {
-        client = webdriverio.remote({desiredCapabilities: {browserName: 'chrome', platform: 'WINDOWS'}});
-        userBrowsePanel.init(client);
-        return client.init().url('http://localhost:8080/admin/tool');
-    });
+    webDriverHelper.setupBrowser();
 
     it(`GIVEN 'user browse panel' is opened WHEN no any items are selected THEN all buttons should have correct states`, () => {
         return userBrowsePanel.waitForNewButtonEnabled().then(result => {
@@ -75,9 +70,8 @@ describe('UserBrowse-panel, toolbar spec', function () {
         });
     });
 
-    beforeEach(() => testUtils.navigateToUsersApp(client));
-    afterEach(() => testUtils.doCloseUsersApp(client));
-    after(() => client.end());
+    beforeEach(() => testUtils.navigateToUsersApp(webDriverHelper.browser));
+    afterEach(() => testUtils.doCloseUsersApp(webDriverHelper.browser));
 });
 
 

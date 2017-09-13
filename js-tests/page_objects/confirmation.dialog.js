@@ -13,6 +13,25 @@ var confirmationDialog = Object.create(page, {
         }
     },
 
+    yesButton: {
+        get: function () {
+            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[text()='Yes']]`
+
+        }
+    },
+
+    clickOnYesButton: {
+        get: function () {
+            return this.doClick(this.yesButton);
+        }
+    },
+
+    noButton: {
+        get: function () {
+            return `${dialog.container}//div[@class='dialog-buttons']//button/span[text()='No']`
+        }
+    },
+
     waitForDialogVisible: {
         value: function (ms) {
             return this.waitForVisible(`${dialog.container}`, ms);
@@ -21,24 +40,6 @@ var confirmationDialog = Object.create(page, {
     isWarningMessageVisible: {
         value: function (ms) {
             return this.isVisible(this.warningMessage, ms);
-        }
-    },
-    noButton: {
-        value: function () {
-            return `${dialog.container}//div[@class='dialog-buttons']//button/span[text()='No']`
-        }
-    },
-
-    yesButton: {
-        value: function () {
-            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[text()='Yes']]`
-
-        }
-    },
-
-    clickOnYesButton: {
-        value: function () {
-            return this.doClick(this.yesButton);
         }
     },
 

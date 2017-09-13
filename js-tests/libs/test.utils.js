@@ -4,12 +4,24 @@
 const launcherPanel = require('../page_objects/launcher.panel');
 const homePage = require('../page_objects/home.page');
 const loginPage = require('../page_objects/login.page');
-const userBrowsePanel = require('../page_objects/browsepanel/userbrowse.panel');
+const browsePanel = require('../page_objects/browsepanel/userbrowse.panel');
 const userStoreWizard = require('../page_objects/wizardpanel/userstore.wizard');
+const newPrincipalDialog = require('../page_objects/browsepanel/new.principal.dialog');
+const filterPanel = require("../page_objects/browsepanel/principal.filter.panel");
 module.exports = {
     xpTabs: {},
+    findAndSelectItem: function (name) {
+        return browsePanel.clickOnSearchButton().then(()=> {
+           return filterPanel.waitForOpened();
+        }).then(()=>{
+           return filterPanel.typeSearchText(name);
+        }).then(()=>{
+            return browsePanel.waitForSpinnerNotVisible(3000);
+        }).then(()=>{
+            return browsePanel.clickOnRowByName(name);
+        })
+    },
     navigateToUsersApp: function (browser) {
-        launcherPanel.init(browser);
         return launcherPanel.waitForPanelVisible(1000).then(()=> {
             console.log("'user browse panel' should be loaded");
             return launcherPanel.clickOnUsersLink();
@@ -26,25 +38,21 @@ module.exports = {
             this.xpTabs = tabs;
             return browser.switchTab(this.xpTabs[1]);
         }).then(()=> {
-            return userBrowsePanel.waitForUsersGridLoaded(3000);
+            return browsePanel.waitForUsersGridLoaded(5000);
         });
     },
 
     doLoginAndSwitchToUsers: function (browser) {
-        loginPage.init(browser);
         return loginPage.doLogin().then(()=> {
-            homePage.init(browser);
-            return homePage.waitForXpTourVisible(3000);
+            return homePage.waitForXpTourVisible(5000);
         }).then(()=> {
             return homePage.doCloseXpTourDialog();
         }).then(()=> {
-            launcherPanel.init(browser);
             return launcherPanel.clickOnUsersLink().pause(1000);
         }).then(()=> {
             return this.doSwitchToUsersApp(browser);
         });
-    }
-    ,
+    },
 
     doCloseUsersApp: function (browser) {
         return browser.close().pause(300).then(()=> {
@@ -52,27 +60,19 @@ module.exports = {
         })
     }
     ,
-    doAddUserStore: function (browser, userStoreData) {
-        userBrowsePanel.init(browser);
-        userStoreWizard.init(browser);
-        return userBrowsePanel.clickOnNewButton().then(()=>userStoreWizard.typeData(userStoreData)).then(
-            ()=> {
-                console.log("UserStoreWizard: button Save has been pressed");
-                return userStoreWizard.doSave();
-            }).pause(500).then(()=> {
-            console.log("do close the User Store tab");
-            userStoreWizard.doClickOnCloseTabButton(userStoreData.displayName);
-        }).catch(()=> {
-            browser.saveScreenshot('err_creating_store')
-            throw new Error(`User Store was not created!`);
-        })
-    }
-    ,
+    openWizardAndSaveUserStore: function (browser, userStoreData) {
+        return this.doOpenUserStoreWizard(browser).then(()=> {
+            return userStoreWizard.typeData(userStoreData)
+        }).then(()=> {
+            return userStoreWizard.doSave()
+        }).pause(500);
+    },
 
-    doOpenUserStoreWizard: function (browser, userStoreData) {
-        userBrowsePanel.init(browser);
-        userStoreWizard.init(browser);
-        return userBrowsePanel.clickOnNewButton().then(()=>userStoreWizard.waitForOpened());
-    }
-    ,
+    doOpenUserStoreWizard: function (browser) {
+        return browsePanel.clickOnNewButton().then(()=> {
+            return newPrincipalDialog.waitForOpened();
+        }).then(()=> {
+            return newPrincipalDialog.clickOnItem(`User Store`);
+        }).then(()=>userStoreWizard.waitForOpened());
+    },
 };

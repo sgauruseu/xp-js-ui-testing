@@ -6,9 +6,6 @@ var wizard = {
     displayNameInput: `//input[contains(@name,'displayName')]`,
     saveButton: `//button[contains(@id,'ActionButton')]//span[text()='Save']`,
     deleteButton: `//button[contains(@id,'ActionButton')]//span[text()='Delete']`,
-    closeItemTabButton: function (name) {
-        return `//div[contains(@id,'AppBar')]//li[contains(@id,'AppBarTabMenuItem') and child::a[@class='label' and text() ='${name}']]/button`;
-    },
 }
 var wizardPanel = Object.create(page, {
 
@@ -34,18 +31,11 @@ var wizardPanel = Object.create(page, {
     },
     typeDisplayName: {
         value: function (displayName) {
-            this.typeTextInInput(this.displayNameInput, displayName);
+            return this.typeTextInInput(this.displayNameInput, displayName);
         }
     },
 
-    doClickOnCloseTabButton: {
-        value: function (displayName) {
-            return this.doClick(`${wizard.closeItemTabButton(displayName)}`).catch(()=> {
-                throw new Error("Close button was not found!")
-            })
-        }
-    },
-    doSave: {
+    waitAndClickOnSave: {
         value: function () {
             return this.waitForSaveButtonEnabled().then(()=> this.doClick(this.saveButton)).pause(500);
         }

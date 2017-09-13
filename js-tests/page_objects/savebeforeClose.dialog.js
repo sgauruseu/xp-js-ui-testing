@@ -14,6 +14,19 @@ var saveBeforeCloseDialog = Object.create(page, {
         }
     },
 
+    noButton: {
+        get: function () {
+            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[contains(.,'o')]`
+        }
+    },
+
+    yesButton: {
+        get: function () {
+            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[contains(.,'es')]]`
+
+        }
+    },
+
     waitForDialogVisible: {
         value: function (ms) {
             return this.waitForVisible(`${dialog.container}`, ms);
@@ -22,18 +35,6 @@ var saveBeforeCloseDialog = Object.create(page, {
     isWarningMessageVisible: {
         value: function (ms) {
             return this.isVisible(this.warningMessage, ms);
-        }
-    },
-    noButton: {
-        value: function () {
-            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[contains(.,'o')]`
-        }
-    },
-
-    yesButton: {
-        value: function () {
-            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[contains(.,'es')]]`
-
         }
     },
 
