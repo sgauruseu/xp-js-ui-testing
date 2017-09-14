@@ -64,7 +64,7 @@ module.exports = {
         return this.doOpenUserStoreWizard(browser).then(()=> {
             return userStoreWizard.typeData(userStoreData)
         }).then(()=> {
-            return userStoreWizard.doSave()
+            return userStoreWizard.waitAndClickOnSave()
         }).pause(500);
     },
 

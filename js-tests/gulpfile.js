@@ -33,11 +33,11 @@ gulp.task('mocha', function () {
         .pipe(mocha(
             {
                 reporter: 'mocha-allure-reporter',
-                outputDir: './build/testoutput/',
+                outputDir: '/build/testoutput/',
                 //reportOpts: { dir: './build/testoutput/'}
                 reporterOptions: {
                     allure: {
-                        outputDir: './build/testoutput/'
+                        outputDir: '/build/testoutput/'
                     }
                 },
             }
