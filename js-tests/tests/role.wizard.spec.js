@@ -12,7 +12,7 @@ const testUtils = require('../libs/test.utils');
 const userItemsBuilder = require('../libs/userItems.builder.js');
 
 
-describe('login page with page object spec ', function () {
+describe('RoleWizard page spec ', function () {
     this.timeout(70000);
     webDriverHelper.setupBrowser();
     let testRole

@@ -15,4 +15,5 @@ module.exports = Object.freeze({
     itemByName: function (name) {
         return ` //div[contains(@id,'NamesView') and child::p[contains(@class,'sub-name') and contains(.,'${name}')]]`
     },
+    CANCEL_BUTTON:`//div[@class='cancel-button-top']`
 });
