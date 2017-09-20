@@ -19,7 +19,7 @@ module.exports = {
             return browsePanel.waitForSpinnerNotVisible(3000);
         }).then(()=>{
             return browsePanel.clickOnRowByName(name);
-        })
+        }).pause(300);
     },
     navigateToUsersApp: function (browser) {
         return launcherPanel.waitForPanelVisible(1000).then(()=> {
@@ -75,4 +75,15 @@ module.exports = {
             return newPrincipalDialog.clickOnItem(`User Store`);
         }).then(()=>userStoreWizard.waitForOpened());
     },
+    getDisplayedElements: function(browser,selector){
+
+
+        var elems = browser.elements(selector).filter;
+        elems.value.map((element)=> {
+
+        })
+        //if(!elem.isVisible()){
+        //    //do something
+        //}
+    }
 };

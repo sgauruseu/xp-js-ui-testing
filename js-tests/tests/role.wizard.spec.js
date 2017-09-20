@@ -4,14 +4,15 @@
 
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
-var expect = chai.expect;
+const expect = chai.expect;
 const assert = chai.assert;
-var webDriverHelper = require('../libs/WebDriverHelper');
-var roleWizard = require('../page_objects/wizardpanel/role.wizard');
-var userBrowsePanel = require('../page_objects/browsepanel/userbrowse.panel');
+const webDriverHelper = require('../libs/WebDriverHelper');
+const roleWizard = require('../page_objects/wizardpanel/role.wizard');
+const userBrowsePanel = require('../page_objects/browsepanel/userbrowse.panel');
 const testUtils = require('../libs/test.utils');
 const userItemsBuilder = require('../libs/userItems.builder.js');
 const appConst = require('../libs/app_const');
+const userItemStatisticsPanel = require('../page_objects/browsepanel/userItem.statistics.panel')
 
 describe('Role Wizard page and info on the UserItemStatisticsPanel spec ', function () {
     this.timeout(70000);
@@ -29,7 +30,7 @@ describe('Role Wizard page and info on the UserItemStatisticsPanel spec ', funct
             }).then(()=> {
                 return roleWizard.waitForNotificationMessage();
             }).then(result=> {
-                assert.strictEqual(result, 'Role was created');
+                expect(result).to.equal('Role was created');
             })
         });
 
@@ -46,14 +47,26 @@ describe('Role Wizard page and info on the UserItemStatisticsPanel spec ', funct
     });
 
     it(`GIVEN existing 'Role' WHEN it has been selected and opened THEN correct description should be present`, () => {
-        return testUtils.findAndSelectItem(testRole.displayName).pause(300).then(()=> {
+        return testUtils.findAndSelectItem(testRole.displayName).then(()=> {
             return userBrowsePanel.clickOnEditButton();
         }).then(()=> {
-           return roleWizard.waitForOpened();
-        }).then(()=> roleWizard.getDescription()).then(result=> {
-            assert.strictEqual(result, testRole.description);
+            return roleWizard.waitForOpened();
+        }).then(()=>  {
+            return expect(roleWizard.getDescription()).to.eventually.be.equal(testRole.description);
         })
     });
+
+    it(`GIVEN existing 'Role' with a member WHEN it has been selected THEN correct info should be present in the 'statistics panel'`,
+        () => {
+            return testUtils.findAndSelectItem(testRole.displayName).then(()=> {
+                return userItemStatisticsPanel.waitForPanelVisible();
+            }).then(()=> {
+                return expect(userItemStatisticsPanel.getItemName()).to.eventually.be.equal(testRole.displayName);
+                // }).then(()=>{
+                //    return expect(userItemStatisticsPanel.getItemPath()).to.eventually.be.equal('/roles/'+testRole.name);
+                // })
+            })
+        });
 
     beforeEach(() => testUtils.navigateToUsersApp(webDriverHelper.browser));
     afterEach(() => testUtils.doCloseUsersApp(webDriverHelper.browser));
