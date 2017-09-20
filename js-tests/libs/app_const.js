@@ -9,4 +9,5 @@ module.exports = Object.freeze({
     USER: 'User',
     USER_GROUP:'User Group',
     CREATE_NEW_HEADER:'Create New',
+    SUPER_USER:'Super User',
 });

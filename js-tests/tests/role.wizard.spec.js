@@ -3,6 +3,7 @@
  */
 
 const chai = require('chai');
+chai.use(require('chai-as-promised'));
 var expect = chai.expect;
 const assert = chai.assert;
 var webDriverHelper = require('../libs/WebDriverHelper');
@@ -10,9 +11,9 @@ var roleWizard = require('../page_objects/wizardpanel/role.wizard');
 var userBrowsePanel = require('../page_objects/browsepanel/userbrowse.panel');
 const testUtils = require('../libs/test.utils');
 const userItemsBuilder = require('../libs/userItems.builder.js');
+const appConst = require('../libs/app_const');
 
-
-describe('RoleWizard page spec ', function () {
+describe('Role Wizard page and info on the UserItemStatisticsPanel spec ', function () {
     this.timeout(70000);
     webDriverHelper.setupBrowser();
     let testRole
@@ -32,11 +33,23 @@ describe('RoleWizard page spec ', function () {
             })
         });
 
-    it(`GIVEN existing 'Role' WHEN it has been selected and opened THEN correct description should be present`, () => {
+    it(`GIVEN existing 'Role' WHEN 'Super User' has been added in members THEN the member should appear on the wizard page`, () => {
         return testUtils.findAndSelectItem(testRole.displayName).pause(300).then(()=> {
             return userBrowsePanel.clickOnEditButton();
         }).then(()=> {
             return roleWizard.waitForOpened();
+        }).then(()=> roleWizard.filterOptionsAndAddMember(appConst.SUPER_USER)).then(()=>roleWizard.waitAndClickOnSave()).then(()=> {
+            return roleWizard.getMembers();
+        }).then((members)=> {
+            expect(members[0]).to.equal(appConst.SUPER_USER);
+        })
+    });
+
+    it(`GIVEN existing 'Role' WHEN it has been selected and opened THEN correct description should be present`, () => {
+        return testUtils.findAndSelectItem(testRole.displayName).pause(300).then(()=> {
+            return userBrowsePanel.clickOnEditButton();
+        }).then(()=> {
+           return roleWizard.waitForOpened();
         }).then(()=> roleWizard.getDescription()).then(result=> {
             assert.strictEqual(result, testRole.description);
         })
