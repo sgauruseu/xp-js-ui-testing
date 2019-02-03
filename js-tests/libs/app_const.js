@@ -2,7 +2,7 @@
  * Created  on 15.09.2017.
  */
 module.exports = Object.freeze({
-    USER_STORE: 'User Store',
+    ID_PROVIDER: 'Id Provider',
     ROLE: 'Role',
     ROLES:'Roles',
     GROUP: 'Group',

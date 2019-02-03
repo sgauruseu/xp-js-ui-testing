@@ -44,9 +44,9 @@ module.exports = {
 
     doLoginAndSwitchToUsers: function (browser) {
         return loginPage.doLogin().then(()=> {
-            return homePage.waitForXpTourVisible(5000);
+            //return homePage.waitForXpTourVisible(5000);
         }).then(()=> {
-            return homePage.doCloseXpTourDialog();
+           // return homePage.doCloseXpTourDialog();
         }).then(()=> {
             return launcherPanel.clickOnUsersLink().pause(1000);
         }).then(()=> {
