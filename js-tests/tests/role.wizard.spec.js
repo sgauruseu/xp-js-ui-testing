@@ -39,10 +39,10 @@ describe('Role Wizard page and info on the UserItemStatisticsPanel spec ', funct
             return userBrowsePanel.clickOnEditButton();
         }).then(()=> {
             return roleWizard.waitForOpened();
-        }).then(()=> roleWizard.filterOptionsAndAddMember(appConst.SUPER_USER)).then(()=>roleWizard.waitAndClickOnSave()).then(()=> {
+        }).then(()=> roleWizard.filterOptionsAndAddMember(appConst.SUPER_USER_DISPLAY_NAME)).then(()=>roleWizard.waitAndClickOnSave()).then(()=> {
             return roleWizard.getMembers();
         }).then((members)=> {
-            expect(members[0]).to.equal(appConst.SUPER_USER);
+            expect(members[0]).to.equal(appConst.SUPER_USER_DISPLAY_NAME);
         })
     });
 
@@ -68,6 +68,6 @@ describe('Role Wizard page and info on the UserItemStatisticsPanel spec ', funct
             })
         });
 
-    beforeEach(() => testUtils.navigateToUsersApp(webDriverHelper.browser));
-    afterEach(() => testUtils.doCloseUsersApp(webDriverHelper.browser));
+    beforeEach(() => testUtils.navigateToUsersApp());
+    afterEach(() => testUtils.doCloseUsersApp());
 });

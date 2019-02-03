@@ -2,41 +2,38 @@
  * Created on 6/19/2017.
  */
 
-var page = require('./page');
-var xpTourDialog = {
-    container: `div[class*='xp-tour']`
+const page = require('./page');
+const xpTourDialog = {
+    container: `//div[contains(@id,'ModalDialog') and descendant::h2[contains(.,'Welcome Tour')]]`
 };
-var homePage = Object.create(page, {
+const home = {
+    container: `div[class*='home-main-container']`
+};
+const homePage = Object.create(page, {
 
     closeXpTourButton: {
         get: function () {
-            return `${xpTourDialog.container} div[class='cancel-button-top']`
+            return `${xpTourDialog.container}//div[@class='cancel-button-top']`
         }
     },
     waitForXpTourVisible: {
         value: function (ms) {
-            return this.waitForVisible(`${xpTourDialog.container}`, ms);
+            return this.waitForVisible(`${xpTourDialog.container}`, ms).catch(err => {
+                return false;
+            })
+        }
+    },
+    waitForLoaded: {
+        value: function (ms) {
+            return this.waitForVisible(`${home.container}`, ms);
         }
     },
     doCloseXpTourDialog: {
         value: function () {
-            return this.doClick(this.closeXpTourButton);
-        }
-    },
-    switchToUsersTab: {
-        value: function () {
-            return this.getBrowser().getTabIds().then(tabs=> {
-                return this.browser.switchTab(tabs[1]);
+            return this.doClick(this.closeXpTourButton).catch(err => {
+                this.saveScreenshot("err_close_xp_tour");
+                throw new Error("err when close the XpTour dialog " + err);
             })
-            // return this.browser.getTabIds().then(handles => {
-            //     handles.forEach((handle)=>{
-            //         this.browser.switchTab(handle);
-            //         if(new String(this.browser.getTitle()).valueOf()==new String("Users - Enonic XP Admin").valueOf()){
-            //             return this.browser.switchTab(handle);
-            //         }
-            //     })
-            //
-            // });
         }
     },
 });

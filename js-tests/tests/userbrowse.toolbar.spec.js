@@ -15,7 +15,7 @@ describe('UserBrowse-panel, toolbar spec', function () {
     it(`GIVEN 'user browse panel' is opened WHEN no any items are selected THEN all buttons should have correct states`, () => {
         return userBrowsePanel.waitForNewButtonEnabled().then(result => {
             assert.isTrue(result, `New button should be enabled`);
-        }).isEnabled(userBrowsePanel.deleteButton).then(result=> {
+        }).isEnabled(userBrowsePanel.deleteButton).then(result => {
             assert.isFalse(result, 'Delete button should be disabled');
         }).isEnabled(userBrowsePanel.editButton).then(result => {
             assert.isFalse(result, 'Edit button should be disabled');
@@ -23,7 +23,7 @@ describe('UserBrowse-panel, toolbar spec', function () {
     });
 
     it(`GIVEN 'user browse panel' is opened WHEN 'System User Store' has been selected THEN all buttons should have correct states`, () => {
-        return userBrowsePanel.clickOnRowByName('/system').waitForEnabled(userBrowsePanel.newButton).then(result=> {
+        return userBrowsePanel.clickOnRowByName('/system').waitForEnabled(userBrowsePanel.newButton).then(result => {
             assert.isTrue(result, `'New' button should be enabled`);
         }).pause(1000).isEnabled(userBrowsePanel.deleteButton).then(result => {
             assert.isFalse(result, `'Delete' button should be disabled, because this is the 'System' user store!`);
@@ -33,7 +33,7 @@ describe('UserBrowse-panel, toolbar spec', function () {
     });
 
     it(`GIVEN 'user browse panel' is opened WHEN 'Roles' has been selected THEN all buttons should have correct states`, () => {
-        return userBrowsePanel.clickOnRowByName('roles').waitForEnabled(userBrowsePanel.newButton).then(result=> {
+        return userBrowsePanel.clickOnRowByName('roles').waitForEnabled(userBrowsePanel.newButton).then(result => {
             assert.isTrue(result, `'New' button should be enabled`);
         }).pause(1000).isEnabled(userBrowsePanel.deleteButton).then(result => {
             assert.isFalse(result, `'Delete' button should be disabled, because 'Roles' folder can not be deleted!`);
@@ -43,11 +43,11 @@ describe('UserBrowse-panel, toolbar spec', function () {
     });
 
     it(`GIVEN 'System User Store' is expanded WHEN 'Users' has been selected THEN all buttons should have correct states`, () => {
-        return userBrowsePanel.clickOnExpanderIcon('/system').then(()=> {
+        return userBrowsePanel.clickOnExpanderIcon('/system').then(() => {
             return userBrowsePanel.waitForFolderUsersVisible();
-        }).then(()=> {
+        }).then(() => {
             return userBrowsePanel.clickOnRowByName('users');
-        }).waitForEnabled(userBrowsePanel.newButton).then(result=> {
+        }).waitForEnabled(userBrowsePanel.newButton).then(result => {
             assert.isTrue(result, `'New' button should be enabled`);
         }).pause(1000).isEnabled(userBrowsePanel.deleteButton).then(result => {
             assert.isFalse(result, `'Delete' button should be disabled, because 'Users' folder can not be deleted!`);
@@ -57,11 +57,11 @@ describe('UserBrowse-panel, toolbar spec', function () {
     });
 
     it(`GIVEN 'System User Store' is expanded WHEN 'Groups' has been selected THEN all buttons should have correct states`, () => {
-        return userBrowsePanel.clickOnExpanderIcon('/system').then(()=> {
+        return userBrowsePanel.clickOnExpanderIcon('/system').then(() => {
             return userBrowsePanel.waitForFolderUsersVisible();
-        }).then(()=> {
+        }).then(() => {
             return userBrowsePanel.clickOnRowByName('groups');
-        }).waitForEnabled(userBrowsePanel.newButton).then(result=> {
+        }).waitForEnabled(userBrowsePanel.newButton).then(result => {
             assert.isTrue(result, `'New' button should be enabled`);
         }).pause(1000).isEnabled(userBrowsePanel.deleteButton).then(result => {
             assert.isFalse(result, `'Delete' button should be disabled, because 'Groups' can not be deleted!`);
@@ -70,8 +70,8 @@ describe('UserBrowse-panel, toolbar spec', function () {
         });
     });
 
-    beforeEach(() => testUtils.navigateToUsersApp(webDriverHelper.browser));
-    afterEach(() => testUtils.doCloseUsersApp(webDriverHelper.browser));
+    beforeEach(() => testUtils.navigateToUsersApp());
+    afterEach(() => testUtils.doCloseUsersApp());
 });
 
 

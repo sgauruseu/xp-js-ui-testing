@@ -5,26 +5,41 @@ module.exports = {
     generateRandomName: function (part) {
         return part + Math.round(Math.random() * 1000000);
     },
-    buildUserStore: function (displayName, description, providerName) {
+    generateRandomNumber: function () {
+        return Math.round(Math.random() * 1000000);
+    },
+    generateEmail: function (userName) {
+        return userName + '@gmail.com'
+    },
+    buildIdProvider: function (displayName, description, authAppName, permissions) {
         return {
             displayName: displayName,
             description: description,
-            providerName: providerName,
+            authAppName: authAppName,
+            permissions: permissions,
         };
     },
-    buildUser: function (displayName, password, email) {
+    buildUser: function (displayName, password, email, roles) {
         return {
             displayName: displayName,
             password: password,
             email: email,
+            roles: roles,
         };
     },
-
     buildRole: function (displayName, description, members) {
         return {
             displayName: displayName,
             description: description,
             members: members,
+        };
+    },
+    buildGroup: function (displayName, description, members, roles) {
+        return {
+            displayName: displayName,
+            description: description,
+            members: members,
+            roles: roles,
         };
     },
 };

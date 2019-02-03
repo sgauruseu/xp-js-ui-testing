@@ -1,10 +1,9 @@
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
-var webDriverHelper = require('../libs/WebDriverHelper');
+const webDriverHelper = require('../libs/WebDriverHelper');
 chai.Should();
-var loginPage = require('../page_objects/login.page');
-require("mocha-allure-reporter");
+const loginPage = require('../page_objects/login.page');
 
 describe('login page spec', function () {
 

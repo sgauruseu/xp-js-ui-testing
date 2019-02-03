@@ -24,11 +24,6 @@ describe('New Principal dialog Spec', function () {
                 assert.equal(result, 'Create New', 'Correct header should be displayed');
             }).waitForVisible(newPrincipalDialog.cancelButton).then(result=> {
                 assert.isTrue(result, '`Cancel` button should be present');
-            }).then(()=>{
-                return newPrincipalDialog.getNumberOfItems()
-                then(result=>{
-                    assert.equal(result, 4, '`User` item should be present on the dialog');
-                })
             }).then(()=> {
                 return newPrincipalDialog.getItemNames()
             }).then((items)=> {
@@ -67,7 +62,7 @@ describe('New Principal dialog Spec', function () {
         });
 
     beforeEach(() => {
-        return testUtils.navigateToUsersApp(webDriverHelper.browser)
+        return testUtils.navigateToUsersApp()
     });
     afterEach(() => {
         return testUtils.doCloseUsersApp(webDriverHelper.browser)

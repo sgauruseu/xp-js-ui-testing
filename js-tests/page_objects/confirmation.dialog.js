@@ -1,45 +1,54 @@
 /**
  * Created  on 6/29/2017.
  */
-var page = require('./page')
-var dialog = {
+const page = require('./page');
+const appConst = require('../libs/app_const');
+const dialog = {
     container: `//div[contains(@id,'ConfirmationDialog')]`,
+    yesButton: `//button[contains(@id,'DialogButton') and child::span[text()='Yes']]`,
+    noButton: `//div[@class='dialog-buttons']//button/span[text()='No']`
 };
-var confirmationDialog = Object.create(page, {
+const confirmationDialog = Object.create(page, {
 
     warningMessage: {
         get: function () {
-            return `${dialog.container}//h6[text()='There are unsaved changes, do you want to save them before closing?']`;
+            return `${dialog.container}//h6[text()='Are you sure you want to delete this item?']`;
         }
     },
-
     yesButton: {
         get: function () {
-            return `${dialog.container}//button[contains(@id,'DialogButton') and child::span[text()='Yes']]`
+            return `${dialog.container}` + `${dialog.yesButton}`;
 
         }
     },
-
-    clickOnYesButton: {
-        get: function () {
-            return this.doClick(this.yesButton);
-        }
-    },
-
     noButton: {
         get: function () {
-            return `${dialog.container}//div[@class='dialog-buttons']//button/span[text()='No']`
+            return `${dialog.container}` + `${dialog.yesButton}`;
         }
     },
-
-    waitForDialogVisible: {
+    clickOnYesButton: {
+        value: function () {
+            return this.doClick(this.yesButton).then(()=> {
+                return this.waitForNotVisible(`${dialog.container}`, 2000);
+            }).catch((err)=> {
+                this.saveScreenshot('err_close_confirmation');
+                throw new Error('Confirmation dialog must be closed!')
+            })
+        }
+    },
+    waitForDialogLoaded: {
+        value: function () {
+            return this.waitForVisible(`${dialog.container}`, appConst.TIMEOUT_3);
+        }
+    },
+    waitForDialogClosed: {
         value: function (ms) {
             return this.waitForVisible(`${dialog.container}`, ms);
         }
     },
     isWarningMessageVisible: {
-        value: function (ms) {
-            return this.isVisible(this.warningMessage, ms);
+        value: function () {
+            return this.isVisible(this.warningMessage);
         }
     },
 
